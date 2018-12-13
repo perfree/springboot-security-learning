@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.perfree.mapper.UserMapper">
+	<resultMap type="com.perfree.entiy.User" id="user_role">
+		<id column="id" property="id"/>
+		<result column="nickname" property="nickname"/>
+		<result column="email" property="email"/>
+		<result column="password" property="password"/>
+		<result column="image" property="image"/>
+		<result column="sex" property="sex"/>
+		<result column="abs" property="abs"/>
+		<result column="girhubUrl" property="girhubUrl"/>
+		<result column="weiboUrl" property="weiboUrl"/>
+		<result column="qq" property="qq"/>
+		<result column="followNum" property="followNum"/>
+		<result column="fansNum" property="fansNum"/>
+		<result column="credentialsSalt" property="credentialsSalt"/>
+		<result column="createTime" property="createTime"/>
+		<result column="state" property="state"/>
+		<collection property="roles" ofType="com.perfree.entiy.Role">
+			<id column="id1" property="id"/>
+			<result column="roleName" property="roleName"/>
+		</collection>
+	</resultMap>
+    <select id="getUserByEmail" parameterType="string" resultMap="user_role">
+        SELECT
+			u.*,urr.id roleId,urr.roleName
+		FROM
+			t_user u
+		LEFT JOIN (
+			SELECT
+				*
+			FROM
+				t_user_role ur
+			LEFT JOIN t_role r ON ur.roleId = r.id
+		) urr ON u.id = urr.userId WHERE u.email=#{email};
+    </select>
+</mapper>
